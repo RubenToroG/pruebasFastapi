@@ -1,5 +1,6 @@
 ### Python ###
 # Byte-compiled / optimized / DLL files
+alembic.ini
 __pycache__/
 *.py[cod]
 *$py.class
