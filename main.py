@@ -11,4 +11,4 @@ app.include_router(movies.movies_user_router)
 
 @app.get('/')
 def home():
-    return {'Hello': 'World'}
+    return {'Hello': 'World'} 
