@@ -1,4 +1,4 @@
-import database as _database
+from database import database as _database
 import models as _models
 
 def _add_tables():
