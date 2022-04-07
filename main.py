@@ -21,7 +21,7 @@ class User(BaseModel):
 
 @app.get('/')
 def home():
-    return {'Hello': 'World'}
+    return {'Hello': 'World, somo Platzi Master'}
 
 
     #Request and Response Body
