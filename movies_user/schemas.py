@@ -7,14 +7,12 @@ class BaseMovieUser(SQLModel):
     __tablename__ = "view_movie"
 
     id_movie: int = Field(
-        default=None,
         sa_column=Column(Integer, ForeignKey('movie.id'))
         )
     id_user: int = Field(
-        default=None, 
         sa_column=Column(Integer, ForeignKey('user.id'))
         )
-    user_score: Optional[float] = Field(default=None)
+    user_score: float
 
 
 class MovieUser(BaseMovieUser, table=True):
@@ -33,7 +31,7 @@ class CreateMovieUser(BaseMovieUser):
     pass
 
 class UpdateMovieUser(SQLModel):
-    user_score: float
+    user_score: float = Field(gt=0, lt=5)
 
 class MovieUserResponse(SQLModel):
     user_score: Optional[float]
