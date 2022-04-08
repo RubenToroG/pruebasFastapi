@@ -1,2 +1,2 @@
-from .schemas import Movie, CreateMovie
-from .services import MoviesService
+from .schemas import MovieUser, MovieUserResponse, CreateMovieUser, UpdateMovieUser
+from .services import MoviesUserService
