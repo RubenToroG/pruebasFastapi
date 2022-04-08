@@ -1,5 +1,4 @@
 from typing import Optional
-from sqlalchemy import table
 from sqlmodel import Field, SQLModel
 
 class BaseMovie(SQLModel):

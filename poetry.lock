@@ -267,7 +267,7 @@ standard = ["websockets (>=10.0)", "httptools (>=0.4.0)", "watchgod (>=0.6)", "p
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.9"
+python-versions = "3.9.2"
 content-hash = "44ddd90d5568ca2ad0e0537354d282ba8eae9fdfd8e69bbbcbf24cc38072b9c9"
 
 [metadata.files]

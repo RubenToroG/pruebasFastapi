@@ -9,13 +9,11 @@ class MoviesService:
         with create_session() as session:
             rows = session.execute(select(Movie)).scalars().all()
             movies = rows
-            print(movies)
         return movies
 
     def get_movie_by_id(self, movie_id: int):
         with create_session as session:
             row = session.exec(select(Movie).where(Movie.id == movie_id)).first()
-        
         return row
 
     def create_movie(self, movie: CreateMovie):
