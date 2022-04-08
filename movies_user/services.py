@@ -1,8 +1,8 @@
-from sqlmodel import Session, select
+from sqlmodel import select
 from .schemas import CreateMovie, Movie
 from database import create_session
 
-class MoviesService:
+class MoviesUserService:
 
     def get_all_movies(self):
         movies = []
@@ -13,7 +13,7 @@ class MoviesService:
 
     def get_movie_by_id(self, movie_id: int):
         with create_session() as session:
-            row = session.execute(select(Movie).where(Movie.id == movie_id)).scalar()
+            row = session.exec(select(Movie).where(Movie.id == movie_id)).first()
         return row
 
     def create_movie(self, movie: CreateMovie):
