@@ -48,20 +48,12 @@ def upgrade():
         'view_movie',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('id_user', sa.Integer, sa.ForeignKey('users.id')),
-        sa.Column('id_movie', sa.Integer, sa.ForeignKey('movies.id'))
-    )
-
-    op.create_table(
-        'score',
-        sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('id_user', sa.Integer, sa.ForeignKey('users.id')),
         sa.Column('id_movie', sa.Integer, sa.ForeignKey('movies.id')),
-        sa.Column('user_score', sa.Float)
+        sa.Column('user_score', sa.Float),
+        sa.UniqueConstraint('id_user', 'id_movie')
     )
-
 
 def downgrade():
-    op.drop_table('score')
     op.drop_table('view_movie')
     op.drop_table('movies_producers')
     op.drop_table('movies_screenwriters')

@@ -1,8 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Path, status, HTTPException
+from common.common_exceptions import HTTP_RESPONSE_404, HTTP_RESPONSE_500
 from movies import MoviesService
+from common import internal_server_error, not_found, HTTP_RESPONSE_404, HTTP_RESPONSE_500
+from sqlalchemy.orm.exc import NoResultFound
+from movies.schemas import Movie
 
-from movies import Movie, CreateMovie
 
 router = APIRouter(
     prefix="/movies",
@@ -14,55 +17,56 @@ service = MoviesService()
     '/',
     response_model=List[Movie],
     status_code=status.HTTP_200_OK,
+    responses={**HTTP_RESPONSE_500},
     summary="Show all movies",
     )
 def get_movies():
-    return service.get_all_movies()
+    """
+    This path operation return a list of all studio ghibli movies
+    
+    **Returns:** list (json array) of all studio ghibli movies
 
-@router.post(
-    '/',
-    status_code=status.HTTP_201_CREATED,
-    summary="Create a new movie in the database",
-    response_model=Movie
-    )
-def create_movie(movie: CreateMovie):
-    return service.create_movie(movie)
+        - List[Movie] -> a list of Movie schema 
+    """
+    try:
+        return service.get_all_movies()
+    except:
+        internal_server_error()
 
 @router.get(
     '/{movie_id}',
+    response_model=Movie,
     status_code=status.HTTP_200_OK,
-    summary="Return a movie for the indicated id"
+    responses={**HTTP_RESPONSE_404, **HTTP_RESPONSE_500},
+    summary="Show the movie info for the especified movie id"
     )
-def get_movie_by_id(movie_id: int = Path(
-    ..., 
-    title="Movie ID",
-    description="This is the movie ID",
-    example="5"
-    )):
+def get_movie_by_id(
+    movie_id: int = Path(
+        ..., 
+        title="Movie ID",
+        description="Movie ID to get info",
+        example="5",
+        ge=1
+        )
+    ):
     """
-    Show a Movie
+    This path operation return movie info for the provided movie id
 
-    This path operation show a movie if the id exist in the database
+    **Parameters:**
 
-    Parameters:
-        - movie_id: int
+        - Path paramters
+            - movie_id: int
+    
+    **Returns:** movie info
+
+        - movie: Movie
     """
-    movie = service.get_movie_by_id(movie_id)
-    if(movie is None):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"¡This movie not exist!")
-    return movie
-
-@router.put(
-    '/{movie_id}',
-    status_code=status.HTTP_202_ACCEPTED,
-    summary="Update a movie with the provided data"
-    )
-def update_movie(movie: CreateMovie, movie_id: int = Path(...)):
-    return service.update_movie(movie_id, movie)
-
-@router.delete(
-    '/{movie_id}',
-    status_code=status.HTTP_200_OK,
-    summary="Delete the especified movie")
-def delete_movie(movie_id: int = Path(...)):
-    return service.delete_movie(movie_id)
+    try:
+        movie = service.get_movie_by_id(movie_id)
+        if(movie is None):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"¡This movie not exist!")
+        return movie
+    except NoResultFound:
+        not_found(detail=f"Movie with id {movie_id} not found")
+    except:
+        internal_server_error()
