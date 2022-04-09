@@ -15,10 +15,7 @@ API to track studio ghibli viewed movies
 
 The API allows:
 
-* **Create movies**
 * **Read movies**
-* **Update movie info**
-* **Delete movie**
 
 ## Movies-User
 

@@ -13,6 +13,7 @@ service = MoviesUserService()
 @router.get(
     '/',
     response_model=List[MovieUserResponse],
+    response_model_exclude_none=True,
     status_code=status.HTTP_200_OK,
     summary="Show all viewed movies by the user",
 )
@@ -22,7 +23,7 @@ def get_movies_user():
   
     **Returns:** a list (json array) with the viewed movies:
 
-        - List[MovieUserResponse] -> a list of MovieUserResponse schema 
+        - List[MovieUserResponse] -> a list of MovieUserResponse schema without average_score
     """
     return service.get_all_movies_user(1)
 
@@ -30,6 +31,7 @@ def get_movies_user():
     '/{movie_id}', 
     response_model=MovieUserResponse, 
     status_code=status.HTTP_200_OK,
+    response_model_exclude_none=True,
     summary="Show information for specified viewed movie",
 )
 def get_movie_user(
@@ -50,7 +52,7 @@ def get_movie_user(
 
     **Returns:** viewed movie information in json format:
 
-        - MovieUserResponse schema
+        - MovieUserResponse schema without average_score
     """
     return service.get_movie_user_by_id(movie_id=movie_id, user_id=1)
 
@@ -136,4 +138,4 @@ def delete_movie_user(
 
         - MovieUser schema
     """
-    return service.delete_movie_user(movie_id=movie_id)
+    return service.delete_movie_user(movie_id=movie_id, user_id=1)

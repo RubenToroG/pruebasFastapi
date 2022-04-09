@@ -12,7 +12,7 @@ class BaseMovieUser(SQLModel):
     id_user: int = Field(
         sa_column=Column(Integer, ForeignKey('user.id'))
         )
-    user_score: float
+    user_score: Optional[float]
 
 
 class MovieUser(BaseMovieUser, table=True):
