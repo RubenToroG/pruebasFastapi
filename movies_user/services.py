@@ -23,7 +23,7 @@ class MoviesUserService:
                     .join(MovieDB, MovieDB.id == MovieUser.id_movie)
                     .where(MovieUser.id_user == user_id and MovieUser.id_movie == movie_id)
                     )   
-            row = session.exec(query).first()
+            row = session.exec(query).one()
             movie = MovieUserResponse(user_score=row[0], movie=Movie.from_moviedb(row[1]))
         return movie
 
@@ -58,8 +58,6 @@ class MoviesUserService:
                         )
                     ))
             movie_bd = session.exec(query).one()
-            if movie_bd is None:
-                return None
             
             session.delete(movie_bd)
             session.commit()

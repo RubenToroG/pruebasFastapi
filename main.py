@@ -34,7 +34,7 @@ tags_metadata = [
     },
     {
         "name": "movies",
-        "description": "Crud operations for movies",
+        "description": "Read movies info",
     },
     {
         "name": "movies-user",

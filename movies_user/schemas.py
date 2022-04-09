@@ -1,3 +1,4 @@
+from operator import le
 from typing import Optional
 from sqlmodel import Field, SQLModel, ForeignKey, Column, Integer
 
@@ -31,7 +32,7 @@ class CreateMovieUser(BaseMovieUser):
     pass
 
 class UpdateMovieUser(SQLModel):
-    user_score: float = Field(gt=0, lt=5)
+    user_score: float = Field(gt=0, le=5)
 
 class MovieUserResponse(SQLModel):
     user_score: Optional[float]

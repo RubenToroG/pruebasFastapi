@@ -1,7 +1,10 @@
+from operator import ge
 from typing import List
-from fastapi import APIRouter, Path, status, HTTPException
+from fastapi import APIRouter, Path, status
+from common.common_exceptions import HTTP_RESPONSE_404, HTTP_RESPONSE_500, internal_server_error, not_found
 from movies_user import MoviesUserService
 from movies_user.schemas import MovieUser, MovieUserResponse, CreateMovieUser, UpdateMovieUser
+from sqlalchemy.orm.exc import NoResultFound
 
 router = APIRouter(
     prefix="/movies/user",
@@ -32,6 +35,7 @@ def get_movies_user():
     response_model=MovieUserResponse, 
     status_code=status.HTTP_200_OK,
     response_model_exclude_none=True,
+    responses={**HTTP_RESPONSE_404, **HTTP_RESPONSE_500},
     summary="Show information for specified viewed movie",
 )
 def get_movie_user(
@@ -39,7 +43,8 @@ def get_movie_user(
         ...,
         title="Movie ID",
         description="This is the movie ID to obtain information",
-        example="3"
+        example="3",
+        ge=1
         )
     ):
     """
@@ -54,13 +59,19 @@ def get_movie_user(
 
         - MovieUserResponse schema without average_score
     """
-    return service.get_movie_user_by_id(movie_id=movie_id, user_id=1)
+    try:
+        return service.get_movie_user_by_id(movie_id=movie_id, user_id=1)
+    except NoResultFound:
+        not_found(f"The user has not seen the movie with id {movie_id}")
+    except:
+        internal_server_error()
 
 @router.post(
     '/', 
     response_model=MovieUser,
     response_model_exclude=['id'],
     status_code=status.HTTP_201_CREATED,
+    responses={**HTTP_RESPONSE_500},
     summary="Save a movie as viewed by the user",
 )
 def create_movie_user(movie_user: CreateMovieUser):
@@ -76,13 +87,17 @@ def create_movie_user(movie_user: CreateMovieUser):
 
         - MovieUser schema
     """
-    return service.create_movie_user(movie_user)
+    try:
+        return service.create_movie_user(movie_user)
+    except:
+        internal_server_error()
 
 @router.put(
     '/{movie_id}',
     response_model=MovieUser,
     response_model_exclude=['id'],
     status_code=status.HTTP_200_OK,
+    responses={**HTTP_RESPONSE_404, **HTTP_RESPONSE_500},
     summary="Update the user score for the viewed movie",
 )
 def update_movie_user(
@@ -91,7 +106,8 @@ def update_movie_user(
         ...,
         title="Movie ID",
         description="This is the movie ID to update the user_score",
-        example="3"
+        example="3",
+        ge=1
         )
     ):
     """
@@ -109,13 +125,18 @@ def update_movie_user(
 
         - MovieUser schema
     """
-    return service.update_movie_user(movie_id=movie_id, movie_user=movie_user)
+    try:
+        return service.update_movie_user(movie_id=movie_id, movie_user=movie_user)
+    except NoResultFound:
+        not_found(f"The movie with id {movie_id} has not seen by the user")
 
 @router.delete(
     '/{movie_id}', 
     response_model=MovieUser,
     response_model_exclude=['id'],
+    responses={**HTTP_RESPONSE_404, **HTTP_RESPONSE_500},
     status_code=status.HTTP_200_OK,
+    
     summary="Delete a movie from the viewed movies",
 )
 def delete_movie_user(
@@ -123,7 +144,8 @@ def delete_movie_user(
         ...,
         title="Movie ID",
         description="This is the movie ID to delete from viewed list",
-        example="3"
+        example="3",
+        ge=1
         )
     ):
     """
@@ -138,4 +160,9 @@ def delete_movie_user(
 
         - MovieUser schema
     """
-    return service.delete_movie_user(movie_id=movie_id, user_id=1)
+    try:
+        return service.delete_movie_user(movie_id=movie_id, user_id=1)
+    except NoResultFound:
+        not_found(f"The movie with id {movie_id} not exist in viewed movies list for this user")
+    except:
+        internal_server_error()
