@@ -37,7 +37,7 @@ class BaseMovie(SQLModel):
     original_title: str
     romanised_title: str
     release_year: int = Field(gt=1900)
-    wiki_link: str
+    wiki_link: Optional[str]
     music: str
     duration: int = Field(gt=0)
     cover: str

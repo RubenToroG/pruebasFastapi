@@ -21,8 +21,13 @@ class MoviesUserService:
         with create_session() as session:
             query = (select(MovieUser.user_score, MovieDB)
                     .join(MovieDB, MovieDB.id == MovieUser.id_movie)
-                    .where(MovieUser.id_user == user_id and MovieUser.id_movie == movie_id)
-                    )   
+                    .where(
+                        and_(
+                                MovieUser.id_user == user_id,
+                                MovieUser.id_movie == movie_id
+                            )
+                        )
+                    )
             row = session.exec(query).one()
             movie = MovieUserResponse(user_score=row[0], movie=Movie.from_moviedb(row[1]))
         return movie
