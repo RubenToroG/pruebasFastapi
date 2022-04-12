@@ -63,8 +63,6 @@ def get_movie_by_id(
     """
     try:
         movie = service.get_movie_by_id(movie_id)
-        if(movie is None):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"¡This movie not exist!")
         return movie
     except NoResultFound:
         not_found(detail=f"Movie with id {movie_id} not found")

@@ -9,12 +9,13 @@ class MoviesService:
         with create_session() as session:
             query = (
                     select(func.avg(MovieUser.user_score).label('user_score'), MovieDB)
-                    .where(
-                        and_(
-                            MovieUser.id_movie == MovieDB.id,
-                            MovieUser.user_score != None
+                    .join(MovieUser,
+                            and_(
+                                MovieUser.id_movie == MovieDB.id,
+                                MovieUser.user_score != None
+                            ),
+                            isouter=True
                         )
-                    )
                     .group_by(MovieDB.id)
                     )
             rows = session.exec(query).all()
@@ -25,15 +26,17 @@ class MoviesService:
         with create_session() as session:
             query = (
                 select(func.avg(MovieUser.user_score).label('user_score'), MovieDB)
-                .where(
-                    and_(
-                        MovieUser.id_movie == MovieDB.id,
-                        MovieUser.user_score != None,
-                        MovieDB.id == movie_id
-                    )
+                    .join(MovieUser,
+                            and_(
+                                MovieUser.id_movie == MovieDB.id,
+                                MovieUser.user_score != None
+                            ),
+                            isouter=True
+                        )
+                    .where(MovieDB.id == movie_id)
+                    .group_by(MovieDB.id)
                 )
-                .group_by(MovieDB.id)
-                )
+            print(query)
             row = session.exec(query).one()
             movie = Movie.from_moviedb(row[1], row[0])
         return movie
