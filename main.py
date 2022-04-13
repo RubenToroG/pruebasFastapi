@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 
 #Internal Routes
-from routes import movies, movies_user
+from routes import movies, movies_user, users
 
 description = """
 API to track studio ghibli viewed movies 
@@ -30,7 +30,7 @@ The API allows:
 tags_metadata = [
     {
         "name": "users",
-        "description": "Not Implemented",
+        "description": "Read user info",
     },
     {
         "name": "movies",
@@ -48,6 +48,6 @@ app = FastAPI(
     description=description,
     openapi_tags=tags_metadata
 )
-
+app.include_router(users.router)
 app.include_router(movies.router)
 app.include_router(movies_user.router)
