@@ -1,5 +1,6 @@
 #FastAPI
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 #Internal Routes
 from routes import movies, movies_user, users
@@ -52,6 +53,18 @@ app = FastAPI(
     description=description,
     openapi_tags=tags_metadata
 )
+
+#Enable CORS for especified origins
+cors_origins = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(users.router)
 app.include_router(movies.router)
 app.include_router(movies_user.router)
