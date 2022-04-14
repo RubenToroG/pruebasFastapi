@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from .schemas import CreateUser, User
+from .schemas import CreateUser, User, UpdateUser
 from database import create_session
 
 class UserService:
@@ -19,12 +19,21 @@ class UserService:
             session.expunge(user)
         return user 
 
-    def update_user(self, user_id, user: CreateUser):
+    def update_user(self, user_id, user):
         with create_session() as session:
-            session.merge(User.from_dict({**{"id": user_id}, **user.dict()}))
-            session.flush()
+            statement = select(User).where(User.id == user_id)
+            result = session.exec(statement)
+            userData = result.one()
+            if user.email: userData.email = user.email
+            if user.first_name: userData.first_name = user.first_name
+            if user.last_name: userData.last_name = user.last_name
+            if user.nick_name: userData.nick_name = user.nick_name
+            if user.profile_picture: userData.profile_picture = user.profile_picture
+
+            session.add(userData)
             session.commit()
-        return self.get_user_by_id(user_id)
+            session.refresh(userData)
+        return user
 
     def delete_user(self, user_id):
         user_bd = self.get_user_by_id(user_id)
