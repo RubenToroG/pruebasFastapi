@@ -9,7 +9,11 @@ API to track studio ghibli viewed movies
 
 ## Users 
 
-(_not implemented_)
+The API allows
+
+* **Create a user**
+* **Read information from a user**
+* **Update user information**
 
 ## Movies
 
@@ -29,7 +33,7 @@ The API allows:
 
 tags_metadata = [
     {
-        "name": "users",
+        "name": "user",
         "description": "Read user info",
     },
     {

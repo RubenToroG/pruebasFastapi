@@ -23,11 +23,11 @@ service = UserService()
 async def get_user_by_id(user_id: int = Path(
     ..., 
     title="User Id",
-    description="This is the user ID",
-    example="5"
+    description="This is the user id",
+    example="1"
     )):
     """
-    Documentación...
+    Return user information for the provided user id
     
     """
     try:
@@ -37,13 +37,18 @@ async def get_user_by_id(user_id: int = Path(
         not_found(detail=f'User with id {user_id} not found')
     except:
         internal_server_error()
-    #if(user is None):
-    #    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"¡This movie not exist!")
-    #return user
 
 
-@router.post("/new") # Creacion de un usuario nuevo
-def create_user(user: CreateUser): # Con el triple punto defino que el parameter_body(user: User) es obligatorio
+@router.post(
+    '/new',
+    summary="Create a user"
+    ) # Creacion de un usuario nuevo
+def create_user(
+    user: CreateUser
+    ): 
+    """
+    This path operation is used for create a new user
+    """
     return service.create_user(user)
 
 
@@ -52,7 +57,6 @@ def create_user(user: CreateUser): # Con el triple punto defino que el parameter
     response_model=User,
     response_model_exclude=['id'],
     status_code=status.HTTP_200_OK,
-    #responses={**HTTP_RESPONSE_404, **HTTP_RESPONSE_500},
     summary="Update the user information",
 )
 def update_user(
@@ -66,19 +70,7 @@ def update_user(
         )
     ):
     """
-    This path operation update the user score for the viewed movie
-    
-    **Parameters:**
-
-        -Path parameters:
-            - movie_id: int 
-
-        - Request body parameters:
-            - movie_user: UpdateMovieUser
-
-    **Returns:** updated movie information
-
-        - MovieUser schema
+    This path operation update the user information
     """
     try:
         return service.update_user(user_id=user_id, user=user)
