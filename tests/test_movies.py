@@ -1,8 +1,8 @@
 from urllib import response
 from fastapi.testclient import TestClient
-from app.main import app
+import main 
 
-client = TestClient(app)
+client = TestClient(main.app)
 MOVIES_ENDPOINT = '/movies/'
 STUDIO_GHIBLI_MOVIES = ['Castle in the Sky', 
 'Grave of the Fireflies', 
