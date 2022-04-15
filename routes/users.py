@@ -60,13 +60,7 @@ def create_user(
 )
 def update_user(
     user: UpdateUser,
-    user_id: int = Path(
-        ...,
-        title="User ID",
-        description="This is the User ID to update",
-        example="3",
-        ge=1
-        )
+    user_id 
     ):
     """
     This path operation update the user information
@@ -81,8 +75,8 @@ def update_user(
 def delete_user(
     user_id: int = Path(
         ...,
-        title="Movie ID",
-        description="Delete a user y ID",
+        title="User ID",
+        description="Delete a user by ID",
         example="3",
         ge=1
         )
