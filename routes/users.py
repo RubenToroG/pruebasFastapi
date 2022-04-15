@@ -42,9 +42,7 @@ async def get_user_by_id(user_id: int = Path(
     '/new',
     summary="Create a user"
     ) # Creacion de un usuario nuevo
-def create_user(
-    user: CreateUser
-    ): 
+def create_user(user: CreateUser): 
     """
     This path operation is used for create a new user
     """

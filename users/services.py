@@ -33,7 +33,7 @@ class UserService:
             session.add(userData)
             session.commit()
             session.refresh(userData)
-        return user
+        return userData
 
     def delete_user(self, user_id):
         user_bd = self.get_user_by_id(user_id)
