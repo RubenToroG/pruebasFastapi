@@ -36,7 +36,6 @@ class MoviesService:
                     .where(MovieDB.id == movie_id)
                     .group_by(MovieDB.id)
                 )
-            print(query)
             row = session.exec(query).one()
             movie = Movie.from_moviedb(row[1], row[0])
         return movie

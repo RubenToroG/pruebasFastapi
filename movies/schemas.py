@@ -40,7 +40,8 @@ class BaseMovie(SQLModel):
     wiki_link: Optional[str]
     music: str
     duration: int = Field(gt=0)
-    cover: str
+    cover: Optional[str]
+    banner:Optional[str]
 
 class MovieDB(BaseMovie, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -58,7 +59,9 @@ class MovieDB(BaseMovie, table=True):
         wiki_link= values['wiki_link'],
         music= values['music'],
         duration= values['duration'],
-        cover= values['cover'])
+        cover= values['cover'],
+        banner= values['banner'],
+        )
 
 class Movie(BaseMovie):
     id: int = Field(primary_key=True, default=None)
@@ -80,7 +83,8 @@ class Movie(BaseMovie):
             cover = movie.cover,
             producers = movie.producers,
             screenwriters = movie.screenwriters,
-            average_score = average_score
+            average_score = average_score,
+            banner=movie.banner
         )
 
 class CreateMovie(BaseMovie):
