@@ -31,8 +31,7 @@ async def get_user_by_id(user_id: int = Path(
     
     """
     try:
-        user = service.get_user_by_id(user_id)
-        return user
+        return service.get_user_by_id(user_id)
     except NoResultFound:
         not_found(detail=f'User with id {user_id} not found')
     except:
@@ -76,3 +75,21 @@ def update_user(
         return service.update_user(user_id=user_id, user=user)
     except NoResultFound:
         not_found(f"The user with id {user_id} no exist")
+
+
+@router.delete('/delete/{user_id}')
+def delete_user(
+    user_id: int = Path(
+        ...,
+        title="Movie ID",
+        description="Delete a user y ID",
+        example="3",
+        ge=1
+        )
+    ):
+    try:
+        return service.delete_user(user_id=user_id)
+    except NoResultFound:
+        not_found(f"The user with id {user_id} was delete from de DB")
+    except:
+        internal_server_error()

@@ -14,6 +14,8 @@ The API allows
 * **Create a user**
 * **Read information from a user**
 * **Update user information**
+* **Delete user**
+
 
 ## Movies
 
