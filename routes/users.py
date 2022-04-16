@@ -1,20 +1,14 @@
-import email
 from common.common_exceptions import internal_server_error, not_found
-from fastapi import APIRouter, Path, status, HTTPException, Body
-from movies import services
-from users import User, UserService, CreateUser, UpdateUser
-from typing import List
 from sqlalchemy.orm.exc import NoResultFound
+from users import User, UserService, CreateUser, UpdateUser
+
+from fastapi import APIRouter, Path, status, Body
 
 
-
-router = APIRouter(
-    prefix="/user",
-    tags=["user"]
-)
-
+router = APIRouter(prefix="/user", tags=["user"])
 service = UserService()
 
+#GET-----------------------------------------------------------------
 @router.get(
     '/{user_id}',
     status_code=status.HTTP_200_OK,
@@ -27,7 +21,7 @@ async def get_user_by_id(user_id: int = Path(
     example="1"
     )):
     """
-    Return user information for the provided user id
+    Return user information for the user
     
     """
     try:
@@ -38,10 +32,8 @@ async def get_user_by_id(user_id: int = Path(
         internal_server_error()
 
 
-@router.post(
-    '/new',
-    summary="Create a user"
-    ) # Creacion de un usuario nuevo
+#POST--------------------------------------------------------------------
+@router.post('/new', summary="Create a user")
 def create_user(user: CreateUser): 
     """
     This path operation is used for create a new user
@@ -49,6 +41,7 @@ def create_user(user: CreateUser):
     return service.create_user(user)
 
 
+#PUT--------------------------------------------------------------------
 @router.put(
     '/{user_id}',
     response_model=User,
@@ -56,10 +49,7 @@ def create_user(user: CreateUser):
     status_code=status.HTTP_200_OK,
     summary="Update the user information",
 )
-def update_user(
-    user: UpdateUser,
-    user_id 
-    ):
+def update_user(user: UpdateUser, user_id):
     """
     This path operation update the user information
     """
@@ -69,6 +59,7 @@ def update_user(
         not_found(f"The user with id {user_id} no exist")
 
 
+#DELETE----------------------------------------------------------------
 @router.delete('/delete/{user_id}')
 def delete_user(
     user_id: int = Path(

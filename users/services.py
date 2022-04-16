@@ -1,13 +1,18 @@
-from sqlmodel import Session, select
-from .schemas import CreateUser, User, UpdateUser
+from .schemas import CreateUser, User
 from database import create_session
+
+from sqlmodel import select
+
 
 class UserService:
 
     def get_user_by_id(self, user_id: int):
         with create_session() as session:
-            row = session.execute(select(User).where(User.id == user_id)).scalar()
-        return row
+            statement = select(User). where(User.id == user_id)
+            result = session.exec(statement)
+            user = result.first()
+        return user
+
 
     def create_user(self, user: CreateUser):
         user = User.from_dict(user.dict())
@@ -18,6 +23,7 @@ class UserService:
             session.refresh(user)
             session.expunge(user)
         return user 
+
 
     def update_user(self, user_id, user):
         with create_session() as session:
@@ -35,11 +41,12 @@ class UserService:
             session.refresh(userData)
         return userData
 
+
     def delete_user(self, user_id):
         user_bd = self.get_user_by_id(user_id)
         if user_bd is None:
             return None
-        
+
         with create_session() as session:
             session.delete(user_bd)
             session.commit()
