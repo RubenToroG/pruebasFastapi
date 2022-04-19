@@ -1,20 +1,35 @@
 from common.common_exceptions import internal_server_error, not_found
 from sqlalchemy.orm.exc import NoResultFound
 from users import User, UserService, CreateUser, UpdateUser
+from fastapi.security import HTTPBearer
 
-from fastapi import APIRouter, Path, status, Body
+from fastapi import APIRouter, Path, status, Body, Depends, Response, status
 
+from utils import VerifyToken
+
+from utils import VerifyToken
+
+token_auth_scheme = HTTPBearer()
 
 router = APIRouter(prefix="/user", tags=["user"])
 service = UserService()
 
+
+@router.get('/private')
+def private(response: Response, token: str = Depends(token_auth_scheme)):
+    """A valid token is required"""
+    result = VerifyToken(token.credentials).verify()
+
+    if result.get("status"):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return result
+
+    return result
+
+
 #GET-----------------------------------------------------------------
-@router.get(
-    '/{user_id}',
-    status_code=status.HTTP_200_OK,
-    summary="Return a user for the indicated id"
-    )
-async def get_user_by_id(user_id: int = Path(
+@router.get('/{user_id}')
+def get_user_by_id(user_id: int = Path(
     ..., 
     title="User Id",
     description="This is the user id",
