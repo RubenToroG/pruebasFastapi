@@ -15,16 +15,28 @@ router = APIRouter(prefix="/user", tags=["user"])
 service = UserService()
 
 
-@router.get('/private')
+@router.get('/private/{user_id}')
 def private(response: Response, token: str = Depends(token_auth_scheme)):
     """A valid token is required"""
     result = VerifyToken(token.credentials).verify()
 
-    if result.get("status"):
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return result
 
-    return result
+    def get_user_by_id(user_id: int = Path(
+        ..., 
+        title="User Id",
+        description="This is the user id",
+        example="1"
+        )):
+        """
+        Return user information for the user
+        
+        """
+        try:
+            return service.get_user_by_id(user_id)
+        except NoResultFound:
+            not_found(detail=f'User with id {user_id} not found')
+        except:
+            internal_server_error()
 
 
 #GET-----------------------------------------------------------------

@@ -15,7 +15,6 @@ class UserService:
 
 
     def create_user(self, user: CreateUser):
-        user = User.from_dict(user.dict())
         with create_session() as session:
             session.add(user)
             session.flush()
